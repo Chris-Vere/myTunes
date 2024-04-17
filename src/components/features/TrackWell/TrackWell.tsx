@@ -43,11 +43,21 @@ const Wrapper = styled.div<{ $position: number }>`
   }
 `;
 
+const Loader = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: hsl(0deg 0% 0% / 50%);
+`;
+
 export type TrackWellProps = {
   tracks: Track[];
   title?: string;
   position: number;
   onClose?: () => void;
+  isLoading?: boolean;
 }
 
 export default function TrackWell(props: TrackWellProps) {
@@ -56,6 +66,8 @@ export default function TrackWell(props: TrackWellProps) {
     title,
     position = 0,
     onClose = () => {},
+    isLoading = false,
+    
   } = props;
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -90,6 +102,7 @@ export default function TrackWell(props: TrackWellProps) {
       <button onClick={onClose}>Close</button>
       <h2>{title}</h2>
       <TrackWellTrackList tracks={tracks} />
+      {isLoading && <Loader />}
     </Wrapper>
   );
 }

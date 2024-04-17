@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { Album, AlbumId, Track } from "../../../types/types";
 import AlbumGridItem from "../AlbumGridItem/AlbumGridItem";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import TrackWell from "../TrackWell/TrackWell";
 
 const StyledGrid = styled.div`
@@ -16,7 +16,7 @@ const albums:Album[] = [
   {
     title: 'The Devil Put Dinosaurs Here',
     releaseDate: '2013',
-    id: 'The Devil Put Dinosaurs Here',
+    id: '123',
     artworkURL: 'The Devil Put Dinosaurs Here.jpg',
   },
   {
@@ -146,11 +146,40 @@ const tracks:Track[] = [
 
 const NUM_COLS = 4;
 
+function useTracks(albumId: string | null) {
+  const [data, setData] = useState<Track[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if(albumId === '123') {
+      setIsLoading(true);
+
+      setTimeout(() => {
+        setIsLoading(false);
+        setData(tracks);
+      }, 3000);
+    }
+  }, [albumId]);
+
+  return {
+    data,
+    isLoading,
+  }
+}
+
 export default function AlbumGrid() {
   const [selectedAlbumId, setSelectedAlbumId] = useState<AlbumId | null>(null);
   const [selectedAlbumPosition, setSelectedAlbumPosition] = useState<number | null>(null);
   const [indicatorPosition, setIndicatorPosition] = useState(0);
   const [showTrackWell, setShowTrackWell] = useState(false);
+
+  const {
+    data,
+    isLoading,
+  } = useTracks(selectedAlbumId);
+
+  console.log('loading', isLoading);
+  
 
   function onSelectedClick(id:AlbumId, index: number) {
     setSelectedAlbumId(id);
@@ -184,8 +213,21 @@ export default function AlbumGrid() {
       {
         albums.map((album, index) => (
           <Fragment key={`${album.id}-${index}`}>
-            <AlbumGridItem onClick={onSelectedClick} album={album} uiPositionIndex={index} />
-            {selectedAlbumPosition === index && showTrackWell && <TrackWell tracks={tracks} title={selectedTitle} position={indicatorPosition} onClose={closeWellHandler} />}
+            <AlbumGridItem
+              onClick={onSelectedClick}
+              album={album}
+              uiPositionIndex={index}
+              loading={album.id === selectedAlbumId && isLoading} />
+            {
+              selectedAlbumPosition === index && showTrackWell &&
+              <TrackWell
+                tracks={data}
+                title={selectedTitle}
+                position={indicatorPosition}
+                onClose={closeWellHandler}
+                isLoading={isLoading}
+                />
+            }
           </Fragment>
         ))
       }
