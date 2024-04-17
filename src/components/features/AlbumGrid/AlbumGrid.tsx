@@ -149,10 +149,12 @@ const NUM_COLS = 4;
 export default function AlbumGrid() {
   const [selectedAlbumId, setSelectedAlbumId] = useState<AlbumId | null>(null);
   const [selectedAlbumPosition, setSelectedAlbumPosition] = useState<number | null>(null);
+  const [indicatorPosition, setIndicatorPosition] = useState(0);
+  const [showTrackWell, setShowTrackWell] = useState(false);
 
   function onSelectedClick(id:AlbumId, index: number) {
     setSelectedAlbumId(id);
-    const targetRow = Math.ceil(index / NUM_COLS);
+    const targetRow = Math.ceil((index + 1) / NUM_COLS);
     const targetPosition = NUM_COLS * targetRow - 1;
 
     let adjustedTargetPosition = Math.min(albums.length, targetPosition);
@@ -160,15 +162,9 @@ export default function AlbumGrid() {
       adjustedTargetPosition -= 1;
     }
     
+    setShowTrackWell(true);
     setSelectedAlbumPosition(adjustedTargetPosition);
-
-    let x = index % NUM_COLS;
-    x = x === 0 ? NUM_COLS : x;
-    const target = (x / NUM_COLS) / 2;
-    console.log(target);
-    
-    
-    
+    setIndicatorPosition(index % NUM_COLS);
   }
 
   const selectedTitle = albums.find((album) => {
@@ -178,19 +174,21 @@ export default function AlbumGrid() {
 
     return false;
   })?.title;
-  
+
+  function closeWellHandler() {
+    setShowTrackWell(false);
+  }
 
   return (
     <StyledGrid className="album-grid">
       {
         albums.map((album, index) => (
           <Fragment key={`${album.id}-${index}`}>
-            <AlbumGridItem onClick={onSelectedClick} album={album} uiPositionIndex={index + 1} />
-            {selectedAlbumPosition === index && <TrackWell tracks={tracks} title={selectedTitle} />}
+            <AlbumGridItem onClick={onSelectedClick} album={album} uiPositionIndex={index} />
+            {selectedAlbumPosition === index && showTrackWell && <TrackWell tracks={tracks} title={selectedTitle} position={indicatorPosition} onClose={closeWellHandler} />}
           </Fragment>
         ))
       }
-
     </StyledGrid>
   )
 }

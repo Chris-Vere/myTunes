@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { Track } from "../../../types/types"
+import { useEffect, useRef, useState } from "react";
+import TrackWellTrackList from "../TrackWellTrackList/TrackWellTrackList";
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ $position: number }>`
   grid-column: 1/5;
   padding: 2em var(--spacing-album-grid);
   width: calc(100% + (var(--spacing-album-grid) * 2));
@@ -23,7 +25,7 @@ const Wrapper = styled.div`
     position: absolute;
     width: 0;
     height: 0;
-    left: calc(12.5% + 20px);
+    left: calc(${props => `${props.$position}px`} + 40px);
     transform: translateX(-50%);
     border-style: solid;
   }
@@ -41,39 +43,53 @@ const Wrapper = styled.div`
   }
 `;
 
-const TrackList = styled.ol`
-  height: 122px;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 6px var(--spacing-album-grid);
-  flex-direction: column;
-  flex-wrap: wrap;
-`;
-
 export type TrackWellProps = {
-  tracks: Track[],
-  title?: string,
+  tracks: Track[];
+  title?: string;
+  position: number;
+  onClose?: () => void;
 }
 
 export default function TrackWell(props: TrackWellProps) {
   const {
     tracks,
     title,
+    position = 0,
+    onClose = () => {},
   } = props;
 
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const NUM_COLS = 4;
+  const PADDING_X = 80;
+  const GAP_WIDTH = 40;
+  const [xPos, setXPos] = useState(0);
+  
+  useEffect(() => {
+    if(wrapperRef.current) {
+      const { width } = wrapperRef.current.getBoundingClientRect();
+      const innerWidth = width - PADDING_X;
+
+      const totalGapsWidth = (NUM_COLS - 1) * GAP_WIDTH;
+      const totalSegmentsWidth = innerWidth - totalGapsWidth;
+      const segmentWidth = totalSegmentsWidth / NUM_COLS;
+      
+      if(position === 0) {
+        setXPos(segmentWidth / 2);
+      } else {
+        const gapsWidth = GAP_WIDTH * position;
+        const segmentsWidth = segmentWidth * position;
+        const total = gapsWidth + segmentsWidth + (segmentWidth / 2);
+        
+        setXPos(total);
+      }
+    }
+  }, [position]);
+
   return (
-    <Wrapper>
+    <Wrapper $position={xPos} ref={wrapperRef}>
+      <button onClick={onClose}>Close</button>
       <h2>{title}</h2>
-      <TrackList>
-        {
-          tracks.map((track) => (
-            <li className="track-list-item" key={track.id}>{track.name} <time>{track.duration}</time></li>
-          ))
-        }
-      </TrackList>
+      <TrackWellTrackList tracks={tracks} />
     </Wrapper>
   );
-
-  return null;
 }
