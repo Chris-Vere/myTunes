@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Track } from "../../../types/types"
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import TrackWellTrackList from "../TrackWellTrackList/TrackWellTrackList";
 
 const Wrapper = styled.div<{ $position: number }>`
@@ -58,6 +58,7 @@ export type TrackWellProps = {
   position: number;
   onClose?: () => void;
   isLoading?: boolean;
+  children?: ReactNode;
 }
 
 export default function TrackWell(props: TrackWellProps) {
@@ -67,7 +68,7 @@ export default function TrackWell(props: TrackWellProps) {
     position = 0,
     onClose = () => {},
     isLoading = false,
-    
+    children,
   } = props;
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -103,6 +104,7 @@ export default function TrackWell(props: TrackWellProps) {
       <h2>{title}</h2>
       <TrackWellTrackList tracks={tracks} />
       {isLoading && <Loader />}
+      {children && <div>{children}</div>}
     </Wrapper>
   );
 }
