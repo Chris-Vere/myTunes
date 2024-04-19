@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Album, AlbumId, Track } from "../../../types/types";
+import { Album, AlbumId } from "../../../types/types";
 import AlbumGridItem from "../AlbumGridItem/AlbumGridItem";
 import { Fragment, useState } from "react";
 import TrackWell from "../TrackWell/TrackWell";
@@ -23,13 +23,13 @@ const albums:Album[] = [
   {
     title: 'Black Gives Way to Blue',
     releaseDate: '2009',
-    id: 'Black Gives Way to Blue',
+    id: '6',
     artworkURL: 'Black Gives Way to Blue.jpg',
   },
   {
     title: 'MTV Unplugged (Live)',
     releaseDate: '1996',
-    id: 'MTV Unplugged (Live)',
+    id: '7',
     artworkURL: 'MTV Unplugged (Live).jpg',
   },
   {
@@ -95,9 +95,6 @@ export default function AlbumGrid() {
     error,
     isLoading,
   } = useTracks(selectedAlbumId);
-
-  console.log('data', data);
-  
 
   function onSelectedClick(id:AlbumId, index: number) {
     setSelectedAlbumId(id);
