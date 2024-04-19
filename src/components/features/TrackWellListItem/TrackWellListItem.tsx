@@ -15,10 +15,11 @@ const Li = styled.li`
 const Button = styled(UnstyledButton)`
   display: flex;
   flex-grow: 1;
-  align-items: center;
+  align-items: flex-start;
   font-size: 14px;
-  line-height: 1;
-  padding: 6px 8px;
+  text-align: left;
+  line-height: 1.5;
+  padding: 6px 6px 6px 0;
   border-radius: 6px;
 `;
 
@@ -31,6 +32,7 @@ const TrackName = styled.span`
 
 const PlayIcon = styled.span`
   margin-left: 8px;
+  margin-right: 8px;
 `;
 
 const Duration = styled.time`
@@ -48,22 +50,24 @@ export default function TrackWellListItem(props: TrackWellListItemProps) {
     track,
   } = props;
 
-  const [shouldRenderPlayBtn, setShouldRenderPlayBtn] = useState(false);
+  const [playBtnOpacity, setPlayBtnOpacity] = useState(0);
 
   function onMouseOver() {
-    setShouldRenderPlayBtn(true);
+    setPlayBtnOpacity(1);
   }
 
   function onMouseOut() {
-    setShouldRenderPlayBtn(false);
+    setPlayBtnOpacity(0);
   }
 
   return (
     <Li role="listitem">
       <Button type="button" onMouseOver={onMouseOver} onMouseOut={onMouseOut}>
         <TrackNumber>{number}.</TrackNumber>
-        <TrackName>{track.name}</TrackName>
-        {shouldRenderPlayBtn && <PlayIcon>play</PlayIcon>}
+        <TrackName>
+          {track.name}
+          {<PlayIcon style={{opacity: playBtnOpacity}}>play</PlayIcon>}
+        </TrackName>
         <Duration>{track.duration}</Duration>
       </Button>
     </Li>
