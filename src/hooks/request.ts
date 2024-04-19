@@ -38,7 +38,7 @@ const requestHandler = <V, E = Error>(request:BaseRequest<V>) => {
 const makeRequest = <T>(path:string) => {
   return requestHandler<T>(async () => {
     if(requestCache.has(path)) {
-      return requestCache.get(path);
+      // return requestCache.get(path);
     }
 
     const response = await fetch(`${BASE_URL}${path}`);
@@ -56,12 +56,14 @@ const useTracks = (albumId: string | null) => {
   const [data, setData] = useState<Track[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
   
   useEffect(() => {
     async function get() {
       if(albumId !== null) {
         setIsLoading(true);
-        const request = makeRequest<Track[]>(`/albums/${albumId}/tracks`);
+        setIsLoaded(false);
+        const request = makeRequest<Track[]>(`/albums/${albumId}/tracks?throttle=true`);
         const result = await request();
 
         if(result.code === 'success') {
@@ -69,7 +71,8 @@ const useTracks = (albumId: string | null) => {
         } else {
           setError(result.error);
         }
-
+        
+        setIsLoaded(true);
         setIsLoading(false);
       } 
     }
@@ -81,6 +84,7 @@ const useTracks = (albumId: string | null) => {
     data,
     error,
     isLoading,
+    isLoaded,
   }
 };
 

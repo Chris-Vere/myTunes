@@ -10,6 +10,16 @@
   --active-album-size: 20px;
 }
 
+@keyframes inAnimation {
+  0% { opacity: 0%; }
+  100% { opacity: 60%; }
+}
+
+@keyframes outAnimation {
+  0% { opacity: 60%; }
+  100% { opacity: 0%; }
+}
+
 html {
   box-sizing: border-box;
 }

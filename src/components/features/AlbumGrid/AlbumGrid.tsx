@@ -1,9 +1,11 @@
+import { Fragment, useRef, useState } from "react";
 import styled from "styled-components"
 import { Album, AlbumId } from "../../../types/types";
 import AlbumGridItem from "../AlbumGridItem/AlbumGridItem";
-import { Fragment, useState } from "react";
 import TrackWell from "../TrackWell/TrackWell";
 import { useTracks } from "../../../hooks/request";
+import { DelayingLoader} from "../../ui/DelayingLoader";
+import useLoader from "../../../hooks/loader";
 
 const StyledGrid = styled.div`
   display: grid;
@@ -91,12 +93,20 @@ export default function AlbumGrid() {
   const [showTrackWell, setShowTrackWell] = useState(false);
 
   const {
-    data,
+    data: fetchedData,
     error,
-    isLoading,
+    isLoaded,
   } = useTracks(selectedAlbumId);
 
+  const loaderRef = useRef<HTMLDivElement>(null);
+
+  const { showLoader } = useLoader({
+    loaderRef,
+    isLoaded,
+  });
+
   function onSelectedClick(id:AlbumId, index: number) {
+    showLoader();
     setSelectedAlbumId(id);
     const targetRow = Math.ceil((index + 1) / NUM_COLS);
     const targetPosition = NUM_COLS * targetRow - 1;
@@ -131,24 +141,23 @@ export default function AlbumGrid() {
             <AlbumGridItem
               onClick={onSelectedClick}
               album={album}
-              uiPositionIndex={index}
-              loading={album.id === selectedAlbumId && isLoading} />
+              uiPositionIndex={index} />
             {
               selectedAlbumPosition === index && showTrackWell &&
               <TrackWell
-                tracks={data}
+                tracks={fetchedData}
                 title={selectedTitle}
                 position={indicatorPosition}
                 onClose={closeWellHandler}
-                isLoading={isLoading}
               >
                 {error && <h2>Unable to load album data</h2>}
-                {data && data.length === 0 && <h2>No track data found</h2>}
+                {fetchedData && fetchedData.length === 0 && <h2>No track data found</h2>}
               </TrackWell>
             }
           </Fragment>
         ))
       }
+      <DelayingLoader ref={loaderRef} />
     </StyledGrid>
   )
 }
