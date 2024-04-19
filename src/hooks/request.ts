@@ -34,20 +34,14 @@ const requestHandler = <V, E = Error>(request:BaseRequest<V>) => {
 }
 
 const makeRequest = <T>(path:string) => {
-    return requestHandler<T>(async () => {
-      return new Promise((res, rej) => {
-        setTimeout(async () => {
-          const response = await fetch(`${BASE_URL}${path}`);
-          if(response.ok) {
-            // return await response.json();
-            const json = await response.json();
-            res(json);
-          }
-          
-          rej(Error('API Error'));
-        }, 2000);
-      });
-    });
+  return requestHandler<T>(async () => {
+    const response = await fetch(`${BASE_URL}${path}`);
+    if(response.ok) {
+      return await response.json();
+    }
+    
+    throw Error('API Error');
+  });
 }
 
 const useTracks = (albumId: string | null) => {
