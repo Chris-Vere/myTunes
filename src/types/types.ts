@@ -14,7 +14,7 @@ export type Album = {
   artworkURL: string,
 }
 
-export type Track = {
+export interface Track {
   name: string,
   id: TrackId,
   duration: string,

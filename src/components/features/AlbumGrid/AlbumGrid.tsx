@@ -1,8 +1,9 @@
 import styled from "styled-components"
 import { Album, AlbumId, Track } from "../../../types/types";
 import AlbumGridItem from "../AlbumGridItem/AlbumGridItem";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import TrackWell from "../TrackWell/TrackWell";
+import { useTracks } from "../../../hooks/request";
 
 const StyledGrid = styled.div`
   display: grid;
@@ -16,7 +17,7 @@ const albums:Album[] = [
   {
     title: 'The Devil Put Dinosaurs Here',
     releaseDate: '2013',
-    id: '123',
+    id: '5',
     artworkURL: 'The Devil Put Dinosaurs Here.jpg',
   },
   {
@@ -81,91 +82,7 @@ const albums:Album[] = [
   },
 ];
 
-const tracks:Track[] = [
-  {
-    name: 'Hollow',
-    duration: '5:41',
-    id: 'Hollow',
-  },
-  {
-    name: 'Pretty Done',
-    duration: '4:36',
-    id: 'Pretty Done',
-  },
-  {
-    name: 'Stone',
-    duration: '4:32',
-    id: 'Stone',
-  },
-  {
-    name: 'Voices',
-    duration: '5:43',
-    id: 'Voices',
-  },
-  {
-    name: 'The Devil Put Dinosaurs Here',
-    duration: '6:39',
-    id: 'The Devil Put Dinosaurs Here',
-  },
-  {
-    name: 'Lab Monkey',
-    duration: '5:58',
-    id: 'Lab Monkey',
-  },
-  {
-    name: 'Low Ceiling',
-    duration: '5:15',
-    id: 'Low Ceiling',
-  },
-  {
-    name: 'Breath on a Window',
-    duration: '5:20',
-    id: 'Breath on a Window',
-  },
-  {
-    name: 'Scalpel',
-    duration: '5:21',
-    id: 'Scalpel',
-  },
-  {
-    name: 'Phantom Limb',
-    duration: '7:08',
-    id: 'Phantom Limb',
-  },
-  {
-    name: 'Hung on a Hook',
-    duration: '5:35',
-    id: 'Hung on a Hook',
-  },
-  {
-    name: 'Choke',
-    duration: '5:44',
-    id: 'Choke',
-  },
-];
-
 const NUM_COLS = 4;
-
-function useTracks(albumId: string | null) {
-  const [data, setData] = useState<Track[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if(albumId === '123') {
-      setIsLoading(true);
-
-      setTimeout(() => {
-        setIsLoading(false);
-        setData(tracks);
-      }, 3000);
-    }
-  }, [albumId]);
-
-  return {
-    data,
-    isLoading,
-  }
-}
 
 export default function AlbumGrid() {
   const [selectedAlbumId, setSelectedAlbumId] = useState<AlbumId | null>(null);
@@ -175,10 +92,11 @@ export default function AlbumGrid() {
 
   const {
     data,
+    error,
     isLoading,
   } = useTracks(selectedAlbumId);
 
-  console.log('loading', isLoading);
+  console.log('data', data);
   
 
   function onSelectedClick(id:AlbumId, index: number) {
@@ -226,7 +144,10 @@ export default function AlbumGrid() {
                 position={indicatorPosition}
                 onClose={closeWellHandler}
                 isLoading={isLoading}
-                />
+              >
+                {error && <h2>Unable to load album data</h2>}
+                {data && data.length === 0 && <h2>No track data found</h2>}
+              </TrackWell>
             }
           </Fragment>
         ))
