@@ -16,6 +16,8 @@ type ErrorResponse<E = Error> = {
 
 type BaseResponse<V, E> = Promise<SuccessResponse<V> | ErrorResponse<E>>;
 
+const requestCache = new Map<string, []>();
+
 const requestHandler = <V, E = Error>(request:BaseRequest<V>) => {
   return async ():BaseResponse<V, E> => {
     try {
@@ -35,9 +37,15 @@ const requestHandler = <V, E = Error>(request:BaseRequest<V>) => {
 
 const makeRequest = <T>(path:string) => {
   return requestHandler<T>(async () => {
+    if(requestCache.has(path)) {
+      return requestCache.get(path);
+    }
+
     const response = await fetch(`${BASE_URL}${path}`);
     if(response.ok) {
-      return await response.json();
+      const data = await response.json();
+      requestCache.set(path, data);
+      return data;
     }
     
     throw Error('API Error');
