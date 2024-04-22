@@ -95,14 +95,20 @@ export default function AlbumGrid() {
   const {
     data: fetchedData,
     error,
-    isLoaded,
+    isLoaded: dataIsLoaded,
   } = useTracks(selectedAlbumId);
 
   const loaderRef = useRef<HTMLDivElement>(null);
 
-  const { showLoader } = useLoader({
+  const {
+    showLoader,
+    deferredData,
+    loadedAndUIReady,
+  } = useLoader({
     loaderRef,
-    isLoaded,
+    isLoaded: dataIsLoaded,
+    data: fetchedData,
+    defaultData: [],
   });
 
   function onSelectedClick(id:AlbumId, index: number) {
@@ -145,13 +151,13 @@ export default function AlbumGrid() {
             {
               selectedAlbumPosition === index && showTrackWell &&
               <TrackWell
-                tracks={fetchedData}
+                tracks={deferredData}
                 title={selectedTitle}
                 position={indicatorPosition}
                 onClose={closeWellHandler}
               >
                 {error && <h2>Unable to load album data</h2>}
-                {fetchedData && fetchedData.length === 0 && <h2>No track data found</h2>}
+                {loadedAndUIReady && deferredData.length === 0 && <h2>No track data found</h2>}
               </TrackWell>
             }
           </Fragment>

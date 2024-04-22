@@ -38,7 +38,7 @@ const requestHandler = <V, E = Error>(request:BaseRequest<V>) => {
 const makeRequest = <T>(path:string) => {
   return requestHandler<T>(async () => {
     if(requestCache.has(path)) {
-      // return requestCache.get(path);
+      return requestCache.get(path);
     }
 
     const response = await fetch(`${BASE_URL}${path}`);

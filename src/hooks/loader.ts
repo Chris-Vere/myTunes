@@ -1,20 +1,28 @@
 import { RefObject, useEffect, useState } from "react"
 
-type LoaderProps = {
+type LoaderProps<T> = {
   loaderRef: RefObject<HTMLElement>;
-  isLoaded: boolean,
+  isLoaded: boolean;
+  data: T;
+  defaultData: T;
 }
 
-const useLoader = (props: LoaderProps) => {
+const useLoader = <T>(props: LoaderProps<T>) => {
   const {
     loaderRef,
     isLoaded,
+    data,
+    defaultData,
   } = props;
   
   const [animationStatus, setAnimationStatus] = useState({
     inComplete: false,
     outComplete: false,
   });
+
+
+  const [deferredData, setDeferredData] = useState<T>(defaultData);
+  const [loadedAndUIReady, setLoadedAndUIReady] = useState(false);
 
   useEffect(() => {
     if(loaderRef.current) {
@@ -24,6 +32,8 @@ const useLoader = (props: LoaderProps) => {
       if(isLoaded) {
         if(inComplete) {
           classList.add('out');
+          setDeferredData(data);
+          setLoadedAndUIReady(true);
         }
 
         if(outComplete) {
@@ -35,17 +45,7 @@ const useLoader = (props: LoaderProps) => {
         }
       }
     }
-  }, [loaderRef, animationStatus, isLoaded]);
-
-  useEffect(() => {
-    if(isLoaded && loaderRef.current) {
-      const { classList } = loaderRef.current;
-
-      if(classList.contains('in') && !classList.contains('out')) {
-        // classList.add('out');
-      }
-    }
-  }, [isLoaded, loaderRef]);
+  }, [loaderRef, animationStatus, isLoaded, data]);
 
   const handleAnimationEnd = (e:AnimationEvent) => {
     if(e.animationName === 'inAnimation') {
@@ -75,6 +75,8 @@ const useLoader = (props: LoaderProps) => {
 
   return {
     showLoader,
+    deferredData,
+    loadedAndUIReady,
   };
 }
 
