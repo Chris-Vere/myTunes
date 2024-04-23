@@ -2,91 +2,60 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../constants";
 import { Track } from "../types/types";
 
-type BaseRequest<V> = () => Promise<V>;
+const requestCache = new Map<string, unknown>();
 
-type SuccessResponse<V> = {
-  code: "success";
-  data: V;
-};
-
-type ErrorResponse<E = Error> = {
-  code: "error";
-  error: E;
-};
-
-type BaseResponse<V, E> = Promise<SuccessResponse<V> | ErrorResponse<E>>;
-
-const requestCache = new Map<string, []>();
-
-const requestHandler = <V, E = Error>(request:BaseRequest<V>) => {
-  return async ():BaseResponse<V, E> => {
-    try {
-      const response = await request();
-      return {
-        code: "success",
-        data: response,
-      }
-    } catch(e) {
-      return {
-        code:"error",
-        error: e as E,
-      }
-    }
-  }
+function getCacheKey(path: string, searchParams: URLSearchParams) {
+  const stringParams = searchParams.toString();
+  return `${path}${stringParams.length ? `?${stringParams}` : ''}`;
 }
 
-const makeRequest = <T>(path:string) => {
-  return requestHandler<T>(async () => {
-    if(requestCache.has(path)) {
-      return requestCache.get(path);
-    }
-
-    const response = await fetch(`${BASE_URL}${path}`);
-    if(response.ok) {
-      const data = await response.json();
-      requestCache.set(path, data);
-      return data;
-    }
-    
-    throw Error('API Error');
-  });
-}
-
-const useTracks = (albumId: string | null) => {
-  const [data, setData] = useState<Track[]>([]);
+const useData = <T>(path: string, params?: Record<string, string>) => {
+  const [data, setData] = useState<T>();
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
+  const searchParams = new URLSearchParams(params);
+  const cacheKey = getCacheKey(path, searchParams);
+
   useEffect(() => {
-    async function get() {
-      if(albumId !== null) {
-        setIsLoading(true);
-        setIsLoaded(false);
-        const request = makeRequest<Track[]>(`/albums/${albumId}/tracks?throttle=true`);
-        const result = await request();
-
-        if(result.code === 'success') {
-          setData(result.data);
-        } else {
-          setError(result.error);
-        }
-        
-        setIsLoaded(true);
+    async function go() {
+      if(requestCache.has(cacheKey)) {
         setIsLoading(false);
-      } 
+        setIsLoaded(true);
+        setData(requestCache.get(cacheKey) as T);
+      } else {
+        try {
+          const url = new URL(`${BASE_URL}${cacheKey}`);
+          const response = await fetch(url);
+          
+          if(response.ok) {
+            const data = await response.json();
+            requestCache.set(cacheKey, data);
+            setIsLoading(false);
+            setIsLoaded(true);
+            setData(data);
+          }
+        } catch (e) {
+          setError(e as Error);
+          setIsLoading(false);
+        }
+      }
     }
-
-    get();
-  }, [albumId]);
+    go();
+  }, [cacheKey]);
 
   return {
     data,
     error,
     isLoading,
     isLoaded,
-  }
-};
+  };
+}
+
+const useTracks = (albumId: string) => {
+  return useData<Track[]>(`/albums/${albumId}/tracks`);
+}
 
 export {
   useTracks,
