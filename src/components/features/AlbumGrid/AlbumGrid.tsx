@@ -87,7 +87,7 @@ const albums:Album[] = [
 const NUM_COLS = 4;
 
 export default function AlbumGrid() {
-  const [selectedAlbumId, setSelectedAlbumId] = useState<AlbumId | null>(null);
+  const [selectedAlbumId, setSelectedAlbumId] = useState<AlbumId | null>('5');
   const [selectedAlbumPosition, setSelectedAlbumPosition] = useState<number | null>(null);
   const [indicatorPosition, setIndicatorPosition] = useState(0);
   const [showTrackWell, setShowTrackWell] = useState(false);
@@ -96,7 +96,7 @@ export default function AlbumGrid() {
     data: fetchedData,
     error,
     isLoaded: dataIsLoaded,
-  } = useTracks(selectedAlbumId);
+  } = useTracks(selectedAlbumId || '');
 
   const loaderRef = useRef<HTMLDivElement>(null);
 
