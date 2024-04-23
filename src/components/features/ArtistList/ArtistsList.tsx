@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Artist, ArtistId } from "../../../types/types";
+import { Artist } from "../../../types/types";
 import Ul from "../../elements/Ul";
 import ArtistsListItem from "../ArtistsListItem/ArtistsListItem";
+import { useParams } from "react-router-dom";
 
 const artists:Artist[] = [
   {
@@ -18,12 +18,12 @@ const artists:Artist[] = [
   },
   {
     name: 'Alice In Chains',
-    id: 'Alice In Chains',
+    id: '1',
   },
 ]
 
 export default function ArtistsList() {
-  const [ selectedArtist, setSelectedArtist ] = useState<ArtistId>(artists[0]?.id);
+  const { artistId } = useParams();
 
   return (
     <Ul>
@@ -31,8 +31,8 @@ export default function ArtistsList() {
         artists.map((artist) => (
           <ArtistsListItem
             key={artist.id}
-            selected={artist.id === selectedArtist}
-            onClick={(id: ArtistId) => setSelectedArtist(id)}
+            id={artist.id}
+            selected={artist.id === artistId}
             artist={artist} />
         ))
       }

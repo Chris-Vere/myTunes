@@ -1,9 +1,7 @@
-import './App.css';
-import AlbumsPanel from './components/features/AlbumsPanel/AlbumsPanel';
-import ArtistsListColumn from './components/features/ArtistList/ArtistsListColumn';
-import Col from './components/layout/Col/Col';
+import { Outlet } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Row from './components/layout/Row/Row';
+import './App.css';
 
 function App() {
   return (
@@ -12,10 +10,7 @@ function App() {
         <section className="player">
         </section>
         <Row>
-          <ArtistsListColumn />
-          <Col style={{flex: 1}}>
-            <AlbumsPanel />
-          </Col>
+          <Outlet />
         </Row>
       </div>
     </Layout>

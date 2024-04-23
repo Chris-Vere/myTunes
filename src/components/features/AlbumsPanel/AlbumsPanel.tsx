@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import { Artist } from "../../../types/types";
 import AlbumGrid from "../AlbumGrid/AlbumGrid";
 import ArtistHeader from "../ArtistHeader/ArtistHeader";
@@ -8,6 +9,8 @@ const artist:Artist = {
 }
 
 export default function AlbumsPanel() {
+  const { artistId } = useParams();
+  
   return (
     <section className="albums-panel">
       <ArtistHeader artist={artist} />

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Artist, ArtistId } from "../../../types/types";
-import { UnstyledButton } from "../../elements/Button";
+import { Link } from "react-router-dom";
 
 const StyledLi = styled.li<{selected?: boolean}>`
   display: flex;
@@ -8,12 +8,14 @@ const StyledLi = styled.li<{selected?: boolean}>`
   background-color: ${props => props.selected ? 'var(--color-red)' : 'transparent'};
 `;
 
-const ArtistButton = styled(UnstyledButton)`
+const ArtistLink = styled(Link)`
+  color: var(--color-white);
   display: flex;
   align-items: center;
   padding: 9px;
   font-size: 12px;
   flex: 1;
+  text-decoration: none;
 
   &::before {
     --size: 2.5em;
@@ -31,27 +33,21 @@ const ArtistButton = styled(UnstyledButton)`
 export type ArtistsListItemProps = {
   artist: Artist;
   selected?: boolean;
-  onClick?: (artistId:ArtistId) => void;
+  id: ArtistId;
 }
 
 export default function ArtistsListItem(props: ArtistsListItemProps) {
   const {
     artist,
     selected,
-    onClick,
+    id,
   } = props;
-
-  function handleClick() {
-    if(onClick) {
-      onClick(artist.id);
-    }
-  }
 
   return (
     <StyledLi selected={selected}>
-      <ArtistButton onClick={handleClick}>
+      <ArtistLink to={`/${id}`}>
         {artist.name}
-      </ArtistButton>
+      </ArtistLink>
     </StyledLi>
   );
 }
