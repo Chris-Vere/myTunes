@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import { Album } from "../../../types/types"
-import { useEffect, useRef, useState } from "react";
-import TrackWellTrackList from "../TrackWellTrackList/TrackWellTrackList";
+import TrackWellList from "./TrackWellList";
 import { useTracksByAlbum } from "../../../hooks/request";
+import TrackWellPointer from "./TrackWellPointer";
 
-const Wrapper = styled.div<{ $position: number }>`
+const Wrapper = styled.div`
   grid-column: 1/5;
-  padding: 2em var(--spacing-album-grid);
+  padding: 0 var(--spacing-album-grid) 2em;
   width: calc(100% + (var(--spacing-album-grid) * 2));
   margin-bottom: -20px;
   transform:
@@ -19,31 +19,6 @@ const Wrapper = styled.div<{ $position: number }>`
   background-position: 0 bottom;
   background-repeat: no-repeat;
   background-image: linear-gradient(var(--color-gray-light), var(--color-gray-dark));
-
-  &::before,
-  &::after {
-    content: '';
-    display: block;
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: calc(${props => `${props.$position}px`} + 40px);
-    transform: translateX(-50%);
-    border-style: solid;
-    transition: transform 0.3s;
-  }
-
-  &:before {
-    top: -23px;
-    border-color: transparent transparent var(--color-border) transparent;
-    border-width: 11px;
-  }
-
-  &:after {
-    top: -20px;
-    border-color: transparent transparent var(--color-gray-light) transparent;
-    border-width: 10px;
-  }
 `;
 
 const Loader = styled.div`
@@ -54,10 +29,6 @@ const Loader = styled.div`
   height: 100%;
   background-color: hsl(0deg 0% 0% / 50%);
 `;
-
-const NUM_COLS = 4;
-const PADDING_X = 80;
-const GAP_WIDTH = 40;
 
 export type TrackWellProps = {
   indicatorPosition: number;
@@ -70,38 +41,16 @@ export default function TrackWell(props: TrackWellProps) {
     album,
   } = props;
 
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [xPos, setXPos] = useState(0);
   const {
     data: trackData = [],
     isLoading: tracksAreLoading,
   } = useTracksByAlbum(album.id);
 
-  useEffect(() => {
-    if(wrapperRef.current) {
-      const { width } = wrapperRef.current.getBoundingClientRect();
-      const innerWidth = width - PADDING_X;
-
-      const totalGapsWidth = (NUM_COLS - 1) * GAP_WIDTH;
-      const totalSegmentsWidth = innerWidth - totalGapsWidth;
-      const segmentWidth = totalSegmentsWidth / NUM_COLS;
-      
-      if(indicatorPosition === 0) {
-        setXPos(segmentWidth / 2);
-      } else {
-        const gapsWidth = GAP_WIDTH * indicatorPosition;
-        const segmentsWidth = segmentWidth * indicatorPosition;
-        const total = gapsWidth + segmentsWidth + (segmentWidth / 2);
-        
-        setXPos(total);
-      }
-    }
-  }, [indicatorPosition]);
-
   return (
-    <Wrapper $position={xPos} ref={wrapperRef}>
+    <Wrapper>
+      <TrackWellPointer indicatorPosition={indicatorPosition} />
       <h2>{album.title}</h2>
-      <TrackWellTrackList tracks={trackData} />
+      <TrackWellList tracks={trackData} />
       {tracksAreLoading && <Loader />}
     </Wrapper>
   );
