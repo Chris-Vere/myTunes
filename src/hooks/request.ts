@@ -2,58 +2,83 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../constants";
 import { Album, AlbumId, Artist, ArtistId, Track } from "../types/types";
 
-const requestCache = new Map<string, unknown>();
+const THROTTLE_REQUESTS = true;
 
-function getCacheKey(path: string, searchParams: URLSearchParams) {
-  const stringParams = searchParams.toString();
-  return `${path}${stringParams.length ? `?${stringParams}` : ''}`;
+type ParamsObject = Record<string, string>;
+type Status = {
+  isLoading: boolean;
+  isLoaded: boolean;
+  isCached: boolean;
 }
 
-const useData = <T>(path: string, params?: Record<string, string>) => {
+const requestCache = new Map<string, unknown>();
+
+function buildURL(path: string, params: ParamsObject) {
+  const searchParams = new URLSearchParams(params);
+  if(THROTTLE_REQUESTS){
+    searchParams.append('throttle', 'true');
+  }
+  const paramsString = searchParams.toString();
+  return new URL(`${BASE_URL}${path}${paramsString.length ? `?${paramsString}` : ''}`);
+}
+
+const useData = <T>(path: string, searchParams: ParamsObject = {}) => {
   const [data, setData] = useState<T>();
   const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [status, setStatus] = useState<Status>({
+    isLoaded: false,
+    isLoading: false,
+    isCached: false,
+  });
 
-  const searchParams = new URLSearchParams(params);
-  searchParams.append('throttle', 'true');
-  const cacheKey = getCacheKey(path, searchParams);
+  const url = buildURL(path, searchParams).toString();
 
   useEffect(() => {
     async function go() {
-      if(requestCache.has(cacheKey)) {
-        setData(requestCache.get(cacheKey) as T);
-        setIsLoading(false);
-        setIsLoaded(true);
+      if(requestCache.has(url)) {
+        setData(requestCache.get(url) as T);
+        setStatus({
+          isCached: true,
+          isLoading: false,
+          isLoaded: true,
+        });
       } else {
         try {
-          setIsLoading(true);
-          setIsLoaded(false);
-          const url = new URL(`${BASE_URL}${cacheKey}`);
+          setStatus({
+            isCached: false,
+            isLoaded: false,
+            isLoading: true,
+          });          
           const response = await fetch(url);
           
           if(response.ok) {
             const data = await response.json();
-            // requestCache.set(cacheKey, data);
-            setIsLoading(false);
-            setIsLoaded(true);
+            requestCache.set(url, data);
+            setStatus((status) => ({
+              ...status,
+              isLoading: false,
+              isLoaded: true,
+            }));
             setData(data);
           }
         } catch (e) {
           setError(e as Error);
-          setIsLoading(false);
-          setIsLoaded(true);
+          setStatus((status) => ({
+            ...status,
+            isLoading: false,
+            isLoaded: true,
+          }));
         }
       }
     }
+
     go();
-  }, [cacheKey]);
+  }, [url]);
 
   return {
     data,
     error,
-    isLoading,
-    isLoaded,
+    status,
   };
 }
 
@@ -68,7 +93,6 @@ const useAlbumsByArtistId = (artistId: ArtistId) => {
 const useTracksByAlbum = (albumId: AlbumId) => {
   return useData<Track[]>(`/albums/${albumId}/tracks`);
 }
-
 
 export {
   useTracksByAlbum,
