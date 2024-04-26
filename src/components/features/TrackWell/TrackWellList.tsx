@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { Track } from "../../../types/types";
-import TrackWellListItem from "../TrackWellListItem/TrackWellListItem";
+import TrackWellListItem from "./TrackWellListItem";
 
 function getNthChildSelectors(items: number) {
   const numRows = Math.ceil(items / 3);

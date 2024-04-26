@@ -20,6 +20,16 @@
   100% { opacity: 0%; }
 }
 
+@keyframes initGridPointer {
+  0% {
+    top: 10px;
+  }
+
+  100% {
+    top: 0px;
+  }
+}
+
 html {
   box-sizing: border-box;
 }
