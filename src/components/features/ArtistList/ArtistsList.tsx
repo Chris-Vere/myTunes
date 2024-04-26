@@ -6,13 +6,14 @@ import { useParams } from "react-router-dom";
 export default function ArtistsList() {
   const { artistId } = useParams();
   const {
-    data: artists,
+    data: artists = [],
+    status,
   } = useArtists();
 
   return (
     <Ul>
       {
-        artists && artists.map((artist) => (
+        status.isLoaded && artists.map((artist) => (
           <ArtistsListItem
             key={artist.id}
             id={artist.id}

@@ -43,9 +43,13 @@ export default function TrackWell(props: TrackWellProps) {
 
   const {
     data: trackData = [],
-    isLoading: tracksAreLoading,
-    isCached: trackedAreCached,
+    status: trackStatus,
   } = useTracksByAlbum(album.id);
+
+  const {
+    isCached: trackedAreCached,
+    isLoading: tracksAreLoading,
+  } = trackStatus;
 
   return (
     <Wrapper>
