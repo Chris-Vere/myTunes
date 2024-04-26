@@ -44,6 +44,7 @@ export default function TrackWell(props: TrackWellProps) {
   const {
     data: trackData = [],
     isLoading: tracksAreLoading,
+    isCached: trackedAreCached,
   } = useTracksByAlbum(album.id);
 
   return (
@@ -51,7 +52,7 @@ export default function TrackWell(props: TrackWellProps) {
       <TrackWellPointer indicatorPosition={indicatorPosition} />
       <h2>{album.title}</h2>
       <TrackWellList tracks={trackData} />
-      {tracksAreLoading && <Loader />}
+      {!trackedAreCached && tracksAreLoading && <Loader />}
     </Wrapper>
   );
 }

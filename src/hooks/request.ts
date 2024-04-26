@@ -14,6 +14,7 @@ const useData = <T>(path: string, params?: Record<string, string>) => {
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isCached, setIsCached] = useState(false);
 
   const searchParams = new URLSearchParams(params);
   searchParams.append('throttle', 'true');
@@ -22,11 +23,13 @@ const useData = <T>(path: string, params?: Record<string, string>) => {
   useEffect(() => {
     async function go() {
       if(requestCache.has(cacheKey)) {
+        setIsCached(true);
         setData(requestCache.get(cacheKey) as T);
         setIsLoading(false);
         setIsLoaded(true);
       } else {
         try {
+          setIsCached(false);
           setIsLoading(true);
           setIsLoaded(false);
           const url = new URL(`${BASE_URL}${cacheKey}`);
@@ -34,7 +37,7 @@ const useData = <T>(path: string, params?: Record<string, string>) => {
           
           if(response.ok) {
             const data = await response.json();
-            // requestCache.set(cacheKey, data);
+            requestCache.set(cacheKey, data);
             setIsLoading(false);
             setIsLoaded(true);
             setData(data);
@@ -54,6 +57,7 @@ const useData = <T>(path: string, params?: Record<string, string>) => {
     error,
     isLoading,
     isLoaded,
+    isCached,
   };
 }
 
