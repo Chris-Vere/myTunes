@@ -4,27 +4,29 @@ import { Album, AlbumId, Artist, ArtistId, Track } from "../types/types";
 
 const requestCache = new Map<string, unknown>();
 
-function getCacheKey(path: string, searchParams: URLSearchParams) {
-  const stringParams = searchParams.toString();
-  return `${path}${stringParams.length ? `?${stringParams}` : ''}`;
+type ParamsObject = Record<string, string>;
+
+function buildURL(path: string, params: ParamsObject) {
+  const searchParams = new URLSearchParams(params);
+  searchParams.append('throttle', 'true');
+  const paramsString = params.toString();
+  return new URL(`${BASE_URL}${path}${paramsString.length ? `?${paramsString}` : ''}`);
 }
 
-const useData = <T>(path: string, params?: Record<string, string>) => {
+const useData = <T>(path: string, searchParams: ParamsObject = {}) => {
   const [data, setData] = useState<T>();
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isCached, setIsCached] = useState(false);
 
-  const searchParams = new URLSearchParams(params);
-  searchParams.append('throttle', 'true');
-  const cacheKey = getCacheKey(path, searchParams);
+  const url = buildURL(path, searchParams).toString();
 
   useEffect(() => {
     async function go() {
-      if(requestCache.has(cacheKey)) {
+      if(requestCache.has(url)) {
         setIsCached(true);
-        setData(requestCache.get(cacheKey) as T);
+        setData(requestCache.get(url) as T);
         setIsLoading(false);
         setIsLoaded(true);
       } else {
@@ -32,12 +34,11 @@ const useData = <T>(path: string, params?: Record<string, string>) => {
           setIsCached(false);
           setIsLoading(true);
           setIsLoaded(false);
-          const url = new URL(`${BASE_URL}${cacheKey}`);
           const response = await fetch(url);
           
           if(response.ok) {
             const data = await response.json();
-            requestCache.set(cacheKey, data);
+            requestCache.set(url, data);
             setIsLoading(false);
             setIsLoaded(true);
             setData(data);
@@ -49,8 +50,9 @@ const useData = <T>(path: string, params?: Record<string, string>) => {
         }
       }
     }
+
     go();
-  }, [cacheKey]);
+  }, [url]);
 
   return {
     data,
@@ -72,7 +74,6 @@ const useAlbumsByArtistId = (artistId: ArtistId) => {
 const useTracksByAlbum = (albumId: AlbumId) => {
   return useData<Track[]>(`/albums/${albumId}/tracks`);
 }
-
 
 export {
   useTracksByAlbum,
