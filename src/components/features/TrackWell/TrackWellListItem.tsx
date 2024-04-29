@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Track } from "../../../types/types"
 import { UnstyledButton } from "../../elements/Button";
-import { useState } from "react";
+import { useContext } from "react";
+import { NowPlayingContext } from "../../../context/NowPlayingContext";
 
 const Li = styled.li`
   display: flex;
@@ -50,23 +51,19 @@ export default function TrackWellListItem(props: TrackWellListItemProps) {
     track,
   } = props;
 
-  const [playBtnOpacity, setPlayBtnOpacity] = useState(0);
-
-  function onMouseOver() {
-    setPlayBtnOpacity(1);
-  }
-
-  function onMouseOut() {
-    setPlayBtnOpacity(0);
+  const { nowPlaying, setNowPlaying} = useContext(NowPlayingContext);
+  
+  function handleClick() {
+    setNowPlaying(track);
   }
 
   return (
-    <Li role="listitem">
-      <Button type="button" onMouseOver={onMouseOver} onMouseOut={onMouseOut}>
+    <Li role="listitem" className={nowPlaying === track ? '-selected' : ''}>
+      <Button type="button" onDoubleClick={handleClick}>
         <TrackNumber>{number}.</TrackNumber>
         <TrackName>
           {track.name}
-          {<PlayIcon style={{opacity: playBtnOpacity}}>play</PlayIcon>}
+          {<PlayIcon>play</PlayIcon>}
         </TrackName>
         <Duration>{track.duration}</Duration>
       </Button>
