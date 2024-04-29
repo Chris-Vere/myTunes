@@ -18,4 +18,5 @@ export interface Track {
   name: string,
   id: TrackId,
   duration: string,
+  url: string,
 }
