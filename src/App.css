@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --color-white: hsl(0, 0%, 100%, 92%);
   --color-gray-dark: hsl(0, 0%, 13%);
