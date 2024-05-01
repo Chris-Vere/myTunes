@@ -1,34 +1,7 @@
-import styled from "styled-components";
 import { Album } from "../../../types/types"
 import TrackWellList from "./TrackWellList";
 import { useTracksByAlbum } from "../../../hooks/request";
 import TrackWellPointer from "./TrackWellPointer";
-
-const Wrapper = styled.div`
-  grid-column: 1/5;
-  padding: 0 var(--spacing-album-grid) 2em;
-  width: calc(100% + (var(--spacing-album-grid) * 2));
-  margin-bottom: -20px;
-  transform:
-    translateX(calc(var(--spacing-album-grid) * -1))
-    translateY(calc(var(--spacing-album-grid) * -0.55));
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-gray-light);
-  background-size: 100% 30px;
-  background-position: 0 bottom;
-  background-repeat: no-repeat;
-  background-image: linear-gradient(var(--color-gray-light), var(--color-gray-dark));
-`;
-
-const Loader = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0%;
-  width: 100%;
-  height: 100%;
-  background-color: hsl(0deg 0% 0% / 50%);
-`;
 
 export type TrackWellProps = {
   indicatorPosition: number;
@@ -50,13 +23,12 @@ export default function TrackWell(props: TrackWellProps) {
     isCached: trackedAreCached,
     isLoading: tracksAreLoading,
   } = trackStatus;
-
   return (
-    <Wrapper>
+    <div className="col-start-1 col-end-5 w-[calc(100%+80px)] -mb-5 pt-0 px-10 pb-8 bg-gradient-to-b from-neutral-600 to-neutral-950 bg-[length:100%_60%] bg-no-repeat bg-bottom bg-neutral-600 border-y border-neutral-500 border-b-neutral-800 translate-x-[calc(var(--spacing-album-grid)*-1)] translate-y-[calc(var(--spacing-album-grid)*-0.55)]">
       <TrackWellPointer indicatorPosition={indicatorPosition} />
       <h2>{album.title}</h2>
       <TrackWellList tracks={trackData} />
-      {!trackedAreCached && tracksAreLoading && <Loader />}
-    </Wrapper>
+      {!trackedAreCached && tracksAreLoading && <div className="absolute top-0 left-0 w-full h-full bg-black/75" />}
+    </div>
   );
 }

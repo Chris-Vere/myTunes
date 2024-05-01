@@ -1,44 +1,6 @@
-import styled from "styled-components";
 import { Track } from "../../../types/types"
-import { UnstyledButton } from "../../elements/Button";
 import { useContext } from "react";
 import { NowPlayingContext } from "../../../context/NowPlayingContext";
-
-const Li = styled.li`
-  display: flex;
-
-  &.-selected {
-    color: var(--color-gray-dark);
-    background-color: var(--color-icon);
-  }
-`;
-
-const Button = styled(UnstyledButton)`
-  display: flex;
-  flex-grow: 1;
-  align-items: flex-start;
-  font-size: 14px;
-  text-align: left;
-  line-height: 1.5;
-  padding: 6px 6px 6px 0;
-  border-radius: 6px;
-`;
-
-const TrackNumber = styled.span`
-`;
-
-const TrackName = styled.span`
-  margin-left: 8px;
-`;
-
-const PlayIcon = styled.span`
-  margin-left: 8px;
-  margin-right: 8px;
-`;
-
-const Duration = styled.time`
-  margin-left: auto;
-`;
 
 export type TrackWellListItemProps = {
   number: number;
@@ -58,15 +20,15 @@ export default function TrackWellListItem(props: TrackWellListItemProps) {
   }
 
   return (
-    <Li role="listitem" className={nowPlaying === track ? '-selected' : ''}>
-      <Button type="button" onDoubleClick={handleClick}>
-        <TrackNumber>{number}.</TrackNumber>
-        <TrackName>
+    <li role="listitem" className={`flex  ${nowPlaying === track ? 'text-neutral-800 bg-neutral-500' : ''}`}>
+      <button type="button" onDoubleClick={handleClick} className="flex grow items-start text-sm text-left leading-6 p-1 pl-0">
+        <span>{number}.</span>
+        <span className="ml-2">
           {track.name}
-          {<PlayIcon>play</PlayIcon>}
-        </TrackName>
-        <Duration>{track.duration}</Duration>
-      </Button>
-    </Li>
+          {<span className="mx-2">play</span>}
+        </span>
+        <time className="ml-auto">{track.duration}</time>
+      </button>
+    </li>
   );
 }

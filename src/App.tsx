@@ -8,8 +8,9 @@ function App() {
   return (
     <NowPlayingProvider>
       <Layout>
-        <div className="right-panel">
-          <section className="player">
+        <div className="flex flex-col grow">
+          <section className="h-20 bg-neutral-700">
+            {/* player */}
           </section>
           <Row>
             <Outlet />

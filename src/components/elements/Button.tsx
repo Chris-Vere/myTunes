@@ -1,29 +1,14 @@
-import styled from "styled-components";
+import { ComponentProps } from "react";
 
-const UnstyledButton = styled.button`
-  padding: 0%;
-  border: none;
-  border-radius: 0%;
-  background: none;
-  box-shadow: none;
-  appearance: none;
-  color: inherit;
-`;
+const CircleButton = (props: ComponentProps<'button'>) => {
+  const {
+    children,
+    ...buttonProps
+  } = props;
 
-const CircleButton = styled(UnstyledButton)`
-  --size: 1.5em;
-
-  display: block;
-  content: "";
-  width: var(--size);
-  height: var(--size);
-  margin-left: 0.25em;
-  margin-right: 0.75em;
-  border-radius: 50%;
-  background-color: var(--color-icon);
-`;
+  return <button type="button" className="block w-6 h-6 ml-1 mr-3 rounded bg-neutral-500" {...buttonProps}>{children}</button>
+}
 
 export {
-  UnstyledButton,
   CircleButton,
 }
