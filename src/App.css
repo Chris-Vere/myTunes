@@ -35,7 +35,6 @@
 }
 
 html {
-  background-color: var(--color-gray-dark);
   font-family: -apple-system,
     "system-ui",
     "Apple Color Emoji",
@@ -46,10 +45,4 @@ html {
     Arial,
     sans-serif;
   font-size: 16px;
-  color: var(--color-white);
-}
-
-.player {
-  background-color: brown;
-  height: 75px;
 }

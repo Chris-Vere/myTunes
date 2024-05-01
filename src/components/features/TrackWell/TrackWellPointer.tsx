@@ -55,7 +55,7 @@ export default function TrackWellPointer(props: TrackWellPointerProps) {
           animate-ease-in-out
           animate-[initGridPointer]">
         {/* <Pointer /> */}
-        <div className="w-[24px] h-[24px] border border-neutral-500 bg-neutral-600 origin-center rotate-45 translate-y-[20%]" />
+        <div className="w-[24px] h-[24px] border border-neutral-700 bg-neutral-600 origin-center rotate-45 translate-y-[20%]" />
       </div>
     </div>
   );
