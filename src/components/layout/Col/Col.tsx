@@ -1,5 +1,4 @@
 import { ReactNode } from "react"
-import StyledCol from "./ColStyles";
 
 export type ColProps = {
   className?: string,
@@ -15,6 +14,6 @@ export default function Col(props: ColProps) {
   } = props;
 
   return (
-    <StyledCol className={className} style={style}>{children}</StyledCol>
+    <div className={className} style={style}>{children}</div>
   );
 }

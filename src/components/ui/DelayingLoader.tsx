@@ -33,5 +33,5 @@ export const DelayingLoader = forwardRef((props: DelayingLoaderProps, ref:Ref<HT
     className,
   } = props;
 
-  return <LoaderDiv ref={ref} className={className} />;
+  return <div ref={ref} className={`${className} absolute top-0 left-0 w-full h-full bg-black opacity-0 pointer-events-none animation-fill-mode-none`} />;
 });

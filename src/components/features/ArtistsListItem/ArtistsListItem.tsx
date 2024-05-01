@@ -1,34 +1,5 @@
-import styled from "styled-components";
 import { Artist, ArtistId } from "../../../types/types";
 import { Link } from "react-router-dom";
-
-const StyledLi = styled.li<{selected?: boolean}>`
-  display: flex;
-  border-bottom: 1px solid var(--color-border);
-  background-color: ${props => props.selected ? 'var(--color-red)' : 'transparent'};
-`;
-
-const ArtistLink = styled(Link)`
-  color: var(--color-white);
-  display: flex;
-  align-items: center;
-  padding: 9px;
-  font-size: 12px;
-  flex: 1;
-  text-decoration: none;
-
-  &::before {
-    --size: 2.5em;
-
-    content: "";
-    display: block;
-    width: var(--size);
-    height: var(--size);
-    margin-right: 9px;
-    background-color: var(--color-icon);
-    border-radius: 50%;
-  }
-`;
 
 export type ArtistsListItemProps = {
   artist: Artist;
@@ -44,10 +15,10 @@ export default function ArtistsListItem(props: ArtistsListItemProps) {
   } = props;
 
   return (
-    <StyledLi selected={selected}>
-      <ArtistLink to={`/${id}`}>
+    <li className={`flex border-b border-[var(--color-border)] ${selected ? 'bg-red-700' : 'bg-transparent'}`}>
+      <Link to={`/${id}`} className="flex flex-1 items-center p-2 text-xs font-extralight text-white before:w-[24px] before:aspect-square before:mr-2 before:rounded-full before:bg-red-400">
         {artist.name}
-      </ArtistLink>
-    </StyledLi>
+      </Link>
+    </li>
   );
 }

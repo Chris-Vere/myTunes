@@ -1,18 +1,9 @@
 import { Fragment, useState } from "react";
-import styled from "styled-components"
 import { AlbumId } from "../../../types/types";
 import AlbumGridItem from "../AlbumGridItem/AlbumGridItem";
 import TrackWell from "../TrackWell/TrackWell";
 import { useParams } from "react-router-dom";
 import { useAlbumsByArtistId } from "../../../hooks/request";
-
-const StyledGrid = styled.div`
-  display: grid;
-  gap: var(--spacing-album-grid);
-  padding: 0 var(--spacing-album-grid);
-  grid-template-columns: repeat(4, 1fr);
-  align-items: start;
-`;
 
 const NUM_COLS = 4;
 
@@ -81,7 +72,7 @@ export default function AlbumGrid() {
   }
 
   return (
-    <StyledGrid className="album-grid">
+    <div className="grid gap-[var(--spacing-album-grid)] py-0 px-[var(--spacing-album-grid)] grid-cols-4 items-start">
       {
         albumData.map((album, index) => (
           <Fragment key={`${album.id}-${index}`}>
@@ -94,6 +85,6 @@ export default function AlbumGrid() {
           </Fragment>
         ))
       }
-    </StyledGrid>
+    </div>
   )
 }
