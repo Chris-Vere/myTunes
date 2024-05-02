@@ -17,7 +17,7 @@ export default function AlbumGridItem(props: AlbumGridItemProps) {
   return (
     <div>
       <button onClick={() => onClick(album.id, uiPositionIndex)} aria-label={`${album.title}, click to display`} className="block relative w-full text-sm">
-        <AlbumArtwork src={album.artworkURL} />
+        <AlbumArtwork src={album.artworkURL} className="rounded-md" />
       </button>
       <h3 className="my-1">{album.title}</h3>
       <p>{album.releaseDate}</p>
