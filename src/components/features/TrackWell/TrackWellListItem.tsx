@@ -13,19 +13,22 @@ export default function TrackWellListItem(props: TrackWellListItemProps) {
     track,
   } = props;
 
-  const { nowPlaying, setNowPlaying} = useContext(NowPlayingContext);
+  const { nowPlaying, setNowPlaying } = useContext(NowPlayingContext);
   
-  function handleClick() {
+  function handleDoubleClick() {
     setNowPlaying(track);
   }
+  
+  const baseLiClasses = 'flex py-1 px-2 rounded-md hover:bg-neutral-400 hover:text-neutral-900';
+  const selectedLiClasses = nowPlaying === track ? 'text-neutral-900 bg-neutral-500 hover:bg-neutral-500 hover:text-neutral-900' : '';
+  const buttonClasses = 'flex grow items-start text-sm text-left leading-6';
 
   return (
-    <li role="listitem" className={`flex  ${nowPlaying === track ? 'text-neutral-800 bg-neutral-500' : ''}`}>
-      <button type="button" onDoubleClick={handleClick} className="flex grow items-start text-sm text-left leading-6 p-1 pl-0">
+    <li role="listitem" className={`${baseLiClasses} ${selectedLiClasses}`}>
+      <button type="button" onDoubleClick={handleDoubleClick} className={buttonClasses}>
         <span>{number}.</span>
         <span className="ml-2">
           {track.name}
-          {<span className="mx-2">play</span>}
         </span>
         <time className="ml-auto">{track.duration}</time>
       </button>
