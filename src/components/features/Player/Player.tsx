@@ -3,7 +3,7 @@ import PlayerControls from "./PlayerControls";
 
 export default function Player() {
   return (
-    <section className="player">
+    <section className="h-20 bg-neutral-700">
       <PlayerControls />
       <PlaybackStatus />
     </section>
