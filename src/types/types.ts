@@ -19,4 +19,6 @@ export interface Track {
   id: TrackId,
   duration: string,
   url: string,
+  artistName: string,
+  albumName: string,
 }

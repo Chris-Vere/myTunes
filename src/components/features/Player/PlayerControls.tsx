@@ -1,17 +1,9 @@
-import styled from "styled-components";
-import { UnstyledButton } from "../../elements/Button";
-
-const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export default function PlayerControls() {
   return (
-    <Wrapper>
-      <UnstyledButton>Prev</UnstyledButton>
-      <UnstyledButton>Play</UnstyledButton>
-      <UnstyledButton>Next</UnstyledButton>
-    </Wrapper>
+    <div className="flex items-center gap-2">
+      <button type="button">Prev</button>
+      <button type="button">Play</button>
+      <button type="button">Next</button>
+    </div>
   );
 }
