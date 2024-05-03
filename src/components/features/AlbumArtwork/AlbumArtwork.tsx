@@ -12,7 +12,7 @@ export default function AlbumArtwork(props: AlbumArtworkProps) {
   } = props;
 
   return (
-    <div {...imgProps} className={`flex h-full aspect-square overflow-hidden shadow-lg bg-gradient-to-b from-red-600 to-red-800 ${propClasses}`}>
+    <div {...imgProps} className={`flex h-full aspect-square overflow-hidden shadow-lg bg-gradient-to-b from-red-200 to-red-300 ${propClasses}`}>
       {isLoading ? <div className="w-full bg-opacity-50 bg-black" /> : ''}
     </div>
   )

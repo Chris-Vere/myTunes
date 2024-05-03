@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { BASE_URL } from "../constants";
 import { Album, AlbumId, Artist, ArtistId, Track } from "../types/types";
 
-const THROTTLE_REQUESTS = true;
+const THROTTLE_REQUESTS = false;
 
 type ParamsObject = Record<string, string>;
 type Status = {
