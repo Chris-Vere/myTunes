@@ -2,19 +2,23 @@ import { useContext } from "react";
 import AlbumArtwork from "../AlbumArtwork/AlbumArtwork";
 import { NowPlayingContext } from "../../../context/NowPlayingContext";
 import PlaybackText from "./PlaybackText";
-import Scrubber from "../../ui/Scrubber";
+import PlayerScrubber from "./PlayerScrubber";
 
 export default function PlaybackStatus() {
   const { nowPlaying } = useContext(NowPlayingContext);
 
+  function handleScrubberSeek(percentage: number) {
+    console.log('seek track to:', percentage);
+  }
+
   return (
     <div className="w-96 flex mx-auto items-center bg-gray-400 rounded-md overflow-clip">
-      <AlbumArtwork className="" />
+      <AlbumArtwork />
       <div className="flex flex-col grow h-full">
         <div className="text-xs text-center py-2">
-          {nowPlaying && <PlaybackText track={nowPlaying} /> }
+          {nowPlaying && <PlaybackText track={nowPlaying} />}
         </div>
-        <Scrubber />
+        <PlayerScrubber onEndSeek={handleScrubberSeek} />
       </div>
     </div>
   );
