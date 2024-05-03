@@ -15,7 +15,7 @@ export default function ArtistsListItem(props: ArtistsListItemProps) {
   } = props;
 
   return (
-    <li className={`flex border-b border-[var(--color-border)] ${selected ? 'bg-red-700' : 'bg-transparent'}`}>
+    <li className={`flex border-b border-gray-600 ${selected ? 'bg-red-700' : 'bg-transparent'}`}>
       <Link to={`/${id}`} className="flex flex-1 items-center p-2 text-xs font-extralight text-white before:w-[24px] before:aspect-square before:mr-2 before:rounded-full before:bg-red-400">
         {artist.name}
       </Link>

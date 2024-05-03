@@ -28,7 +28,7 @@ export default function Layout(props: LayoutProps) {
 
   return (
     <main className="flex h-full">
-      <aside className="w-1/6 p-6 bg-neutral-800 border-r border-r-neutral-700">
+      <aside className="w-1/6 p-6 bg-gray-900 border-r border-r-gray-600">
         <nav className="flex flex-col">
           {
             btnConfig.map((btn) => (
@@ -48,7 +48,7 @@ export default function Layout(props: LayoutProps) {
                 before:mr-3
                 before:rounded-full
                 before:bg-red-400
-                ${btn.selected ? 'bg-neutral-700' : ''}`}
+                ${btn.selected ? 'bg-gray-500' : ''}`}
                 >
                 {btn.text}
               </button>

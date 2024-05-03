@@ -19,8 +19,8 @@ export default function TrackWellListItem(props: TrackWellListItemProps) {
     setNowPlaying(track);
   }
   
-  const baseLiClasses = 'flex py-1 px-2 rounded-md hover:bg-neutral-400 hover:text-neutral-900';
-  const selectedLiClasses = nowPlaying === track ? 'text-neutral-900 bg-neutral-500 hover:bg-neutral-500 hover:text-neutral-900' : '';
+  const baseLiClasses = 'flex py-1 px-2 rounded-md';
+  const selectedLiClasses = nowPlaying === track ? 'text-gray-1000 bg-gray-200 hover:text-gray-1000 hover:bg-gray-200' : '';
   const buttonClasses = 'flex grow items-start text-sm text-left leading-6';
 
   return (
