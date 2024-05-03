@@ -1,11 +1,11 @@
 import { ReactElement } from "react"
 
-type Btn = {
+type ButtonType = {
   text: string;
   selected: boolean,
 }
 
-const btnConfig:Btn[] = [{
+const buttonConfig:ButtonType[] = [{
     text: 'Artists',
     selected: true,
   }, {
@@ -31,7 +31,7 @@ export default function Layout(props: LayoutProps) {
       <aside className="w-1/6 p-6 bg-gray-900 border-r border-r-gray-600">
         <nav className="flex flex-col">
           {
-            btnConfig.map((btn) => (
+            buttonConfig.map((btn) => (
               <button
                 key={btn.text}
                 className={`
@@ -47,7 +47,7 @@ export default function Layout(props: LayoutProps) {
                 before:ml-1
                 before:mr-3
                 before:rounded-full
-                before:bg-red-400
+                before:bg-red-100
                 ${btn.selected ? 'bg-gray-500' : ''}`}
                 >
                 {btn.text}
