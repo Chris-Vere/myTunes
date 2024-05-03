@@ -9,11 +9,26 @@ export default {
   theme: {
     extend: {
       animationFillMode: {
-          none: "none",
-          forwards: "forwards",
-          backwards: "backwards",
-          both: "both",
-        },
+        none: "none",
+        forwards: "forwards",
+        backwards: "backwards",
+        both: "both",
+      },
+      colors: {
+        gray: {
+          100: '#eeeeee',
+          200: '#aeaeae',
+          300: '#808080',
+          350: '#5f5f5f',
+          400: '#4d4d4d',
+          500: '#39393b',
+          600: '#3b3b3c',
+          700: '#2c2c2c',
+          800: '#232323',
+          900: '#252526',
+          1000: '#1f1f1f',
+        }
+      }
     },
   },
   plugins: [
