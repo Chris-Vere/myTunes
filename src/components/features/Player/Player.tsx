@@ -1,4 +1,4 @@
-import Audio from "./Audio";
+import Audio from "../Audio/Audio";
 import PlaybackStatus from "./PlaybackStatus";
 import PlayerControls from "./PlayerControls";
 

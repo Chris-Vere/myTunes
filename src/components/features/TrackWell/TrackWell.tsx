@@ -15,7 +15,7 @@ export default function TrackWell(props: TrackWellProps) {
   } = props;
 
   const {
-    data: trackData = [],
+    data: trackData,
     status: trackStatus,
   } = useTracksByAlbum(album.id);
 
