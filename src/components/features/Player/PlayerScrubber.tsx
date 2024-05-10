@@ -1,9 +1,28 @@
-import Scrubber, { ScrubberProps } from "../../ui/Scrubber/Scrubber";
+import { useContext, useEffect, useState } from "react";
+import Scrubber from "../../ui/Scrubber/Scrubber";
+import { AudioContext } from "../../../context/AudioContext";
 
-type PlayerScrubberProps = ScrubberProps;
+export default function PlayerScrubber() {
+  const { audioEl } = useContext(AudioContext)!;
+  const [playPosition, setPlayPosition] = useState((audioEl && audioEl.currentTime) || 0);
 
-export default function PlayerScrubber(props: PlayerScrubberProps) {
+  function handleScrubberSeek (percentage: number) {
+    audioEl.currentTime = audioEl.duration * percentage;
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const pct = audioEl.currentTime / audioEl.duration;
+      setPlayPosition(pct);
+    }, 500);
+
+    return () => {
+      clearInterval(interval);
+    }
+
+  }, [audioEl]);
+
   return (
-    <Scrubber {...props} />
+    <Scrubber onChange={handleScrubberSeek} percentage={playPosition} />
   );
 }
