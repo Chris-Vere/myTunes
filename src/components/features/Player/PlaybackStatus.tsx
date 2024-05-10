@@ -7,10 +7,6 @@ import PlayerScrubber from "./PlayerScrubber";
 export default function PlaybackStatus() {
   const { nowPlaying } = useContext(NowPlayingContext);
 
-  function handleScrubberSeek(percentage: number) {
-    console.log('seek track to:', percentage);
-  }
-
   return (
     <div className="w-96 flex mx-auto items-center bg-gray-400 rounded-md overflow-clip">
       <AlbumArtwork />
@@ -18,7 +14,7 @@ export default function PlaybackStatus() {
         <div className="text-xs text-center py-2">
           {nowPlaying && <PlaybackText track={nowPlaying} />}
         </div>
-        <PlayerScrubber onEndSeek={handleScrubberSeek} />
+        <PlayerScrubber />
       </div>
     </div>
   );

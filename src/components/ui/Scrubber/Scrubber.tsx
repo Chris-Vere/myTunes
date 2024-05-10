@@ -3,17 +3,19 @@ import Indicator from "./Indicator";
 import Grip from "./Grip";
 
 export type ScrubberProps = {
-  onEndSeek?: (percentage:number) => void;
+  onChange?: (percentage:number) => void;
+  percentage?: number;
 }
 
 export default function Scrubber(props: ScrubberProps) {
   const {
-    onEndSeek = () => {},
+    onChange = () => {},
+    percentage = 0,
   } = props;
   
   const trackRef = useRef<HTMLDivElement>(null);
   const [trackBounds, setTrackBounds] = useState<DOMRect>();
-  const [uiPercentage, setUiPercentage] = useState(0);
+  const [uiPercentage, setUiPercentage] = useState(percentage);
 
   const handleClick:MouseEventHandler<HTMLDivElement> = (e) => {
     if(trackBounds){
@@ -21,13 +23,13 @@ export default function Scrubber(props: ScrubberProps) {
       const pct = clickPosition / trackBounds.width;
       
       setUiPercentage(pct);
-      onEndSeek(pct);
+      onChange(pct);
     }
   }
 
   const handleGripUpdate = (gripPercentage:number) => {
     setUiPercentage(gripPercentage);
-    onEndSeek(gripPercentage);
+    onChange(gripPercentage);
   }
 
   useEffect(() => {
@@ -36,6 +38,10 @@ export default function Scrubber(props: ScrubberProps) {
       setTrackBounds(trackEl.getBoundingClientRect());
     }
   }, []);
+
+  useEffect(() => {
+    setUiPercentage(percentage);
+  }, [percentage]);
 
   return (
     <div ref={trackRef} onClick={handleClick} className="relative w-full bg-gray-350 mt-auto">
