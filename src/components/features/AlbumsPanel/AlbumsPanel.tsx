@@ -1,8 +1,6 @@
-// import { useParams } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import AlbumGrid from "../AlbumGrid/AlbumGrid";
-// import { useAlbumsByArtistId } from "../../../hooks/request";
-// import SelectedAlbumContext from "../../../context/AlbumsContext";
+import ArtistHeader from "../ArtistHeader/ArtistHeader";
 
 export default function AlbumsPanel() {
   
@@ -10,9 +8,8 @@ export default function AlbumsPanel() {
 
   return (
     <section className="albums-panel">
-      
-        {/* <ArtistHeader artist={artist} /> */}
-        <AlbumGrid key={artistId} />
+      <ArtistHeader />
+      <AlbumGrid key={artistId} />
     </section>
   );
 }

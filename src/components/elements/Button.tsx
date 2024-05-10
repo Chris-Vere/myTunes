@@ -6,7 +6,7 @@ const CircleButton = (props: ComponentProps<'button'>) => {
     ...buttonProps
   } = props;
 
-  return <button type="button" className="block w-6 h-6 ml-1 mr-3 rounded bg-gray-500" {...buttonProps}>{children}</button>
+  return <button type="button" className="block w-6 h-6 ml-1 mr-3 rounded bg-red-700" {...buttonProps}>{children}</button>
 }
 
 export {

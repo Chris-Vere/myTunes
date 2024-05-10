@@ -17,7 +17,7 @@ export default function Audio() {
     const { url: src } = nowPlaying || { url: '' };
 
     if(src !== '') {
-      contextAudioEl.src = src;
+      contextAudioEl.src = `/${src}`;
       contextAudioEl.play();
    }
  }, [contextAudioEl, nowPlaying]);

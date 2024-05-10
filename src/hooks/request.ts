@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../constants";
-import { Album, AlbumId, Artist, ArtistId, Track } from "../types/types";
-
-const THROTTLE_REQUESTS = false;
+import { BASE_URL, PENDING_RESPONSES } from "../utils/constants";
+import { Album, AlbumId, Artist, ArtistId, EmptyAlbum, EmptyArtist, EmptyTrack, Track } from "../types/types";
 
 type ParamsObject = Record<string, string>;
-type Status = {
-  isLoading: boolean;
-  isLoaded: boolean;
-  isCached: boolean;
-}
 
+const THROTTLE_REQUESTS = false;
 const requestCache = new Map<string, unknown>();
 
 function buildURL(path: string, params: ParamsObject) {
@@ -22,10 +16,14 @@ function buildURL(path: string, params: ParamsObject) {
   return new URL(`${BASE_URL}${path}${paramsString.length ? `?${paramsString}` : ''}`);
 }
 
-const useData = <T>(path: string, searchParams: ParamsObject = {}) => {
-  const [data, setData] = useState<T>();
+const useData = <T>(path: string, pendingResponse: T, searchParams: ParamsObject = {}) => {
+  const [data, setData] = useState<T>(pendingResponse);
   const [error, setError] = useState<Error | null>(null);
-  const [status, setStatus] = useState<Status>({
+  const [status, setStatus] = useState<{
+    isLoading: boolean;
+    isLoaded: boolean;
+    isCached: boolean;
+  }>({
     isLoaded: false,
     isLoading: false,
     isCached: false,
@@ -34,7 +32,7 @@ const useData = <T>(path: string, searchParams: ParamsObject = {}) => {
   const url = buildURL(path, searchParams).toString();
 
   useEffect(() => {
-    async function go() {
+    async function retrieve() {
       if(requestCache.has(url)) {
         setData(requestCache.get(url) as T);
         setStatus({
@@ -72,7 +70,7 @@ const useData = <T>(path: string, searchParams: ParamsObject = {}) => {
       }
     }
 
-    go();
+    retrieve();
   }, [url]);
 
   return {
@@ -82,20 +80,32 @@ const useData = <T>(path: string, searchParams: ParamsObject = {}) => {
   };
 }
 
+const {
+  ALBUMS,
+  ARTIST,
+  ARTISTS,
+  TRACKS,
+} = PENDING_RESPONSES;
+
 const useArtists = () => {
-  return useData<Artist[]>(`/artists`);
+  return useData<Artist[] | EmptyArtist[]>('/artists', ARTISTS);
+}
+
+const useArtistById = (artistId: ArtistId) => {
+  return useData<Artist | EmptyArtist>(`/artists/${artistId}`, ARTIST);
 }
 
 const useAlbumsByArtistId = (artistId: ArtistId) => {
-  return useData<Album[]>(`/artists/${artistId}/albums`);  
+  return useData<Album[] | EmptyAlbum[]>(`/artists/${artistId}/albums`, ALBUMS);
 }
 
 const useTracksByAlbum = (albumId: AlbumId) => {
-  return useData<Track[]>(`/albums/${albumId}/tracks`);
+  return useData<Track[] | EmptyTrack[]>(`/albums/${albumId}/tracks`, TRACKS);
 }
 
 export {
-  useTracksByAlbum,
   useArtists,
+  useArtistById,
+  useTracksByAlbum,
   useAlbumsByArtistId,
 }

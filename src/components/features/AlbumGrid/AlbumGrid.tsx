@@ -1,8 +1,8 @@
 import { Fragment, useState } from "react";
-import { AlbumId } from "../../../types/types";
-import AlbumGridItem from "../AlbumGridItem/AlbumGridItem";
-import TrackWell from "../TrackWell/TrackWell";
 import { useParams } from "react-router-dom";
+import { AlbumId } from "../../../types/types";
+import AlbumGridItem from "./AlbumGridItem";
+import TrackWell from "../TrackWell/TrackWell";
 import { useAlbumsByArtistId } from "../../../hooks/request";
 
 const NUM_COLS = 4;
