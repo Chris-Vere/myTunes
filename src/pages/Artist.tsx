@@ -5,10 +5,10 @@ export default function ArtistPage() {
   const { artistId } = useParams();
   const {
     data,
-    status,
+    isLoaded,
   } = useArtistById(artistId!);
 
-  if(status.isLoaded) {
+  if(isLoaded) {
     return (
       <div>
         <h1 className="mb-2 text-xl font-bold">{data.name}</h1>
