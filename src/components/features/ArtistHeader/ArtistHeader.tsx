@@ -8,10 +8,10 @@ export default function ArtistHeader() {
   
   const {
     data,
-    status,
+    isLoaded,
   } = useArtistById(artistId!);
 
-  const artistName = status.isLoaded ? data.name : '';
+  const artistName = isLoaded ? data.name : '';
 
   return (
     <header className="px-10 mb-5">

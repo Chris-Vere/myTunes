@@ -16,17 +16,42 @@ function buildURL(path: string, params: ParamsObject) {
   return new URL(`${BASE_URL}${path}${paramsString.length ? `?${paramsString}` : ''}`);
 }
 
+type InitalType<T> = {
+  data: T;
+  error: null;
+  isLoading: false;
+  isLoaded: false;
+}
+
+type LoadingType<T> = {
+  isLoading: true;
+  isLoaded: false;
+  data: T;
+  error: null;
+}
+
+type SuccessType<T> = {
+  data: T;
+  isLoading: false;
+  isLoaded: true;
+  error: null;
+}
+
+type ErrorType<T> = {
+  error: Error;
+  isLoading: false;
+  data: T;
+  isLoaded: true;
+}
+
+type RequestResponseType<T> = InitalType<T> | LoadingType<T> | SuccessType<T> | ErrorType<T>;
+
 const useData = <T>(path: string, pendingResponse: T, searchParams: ParamsObject = {}) => {
-  const [data, setData] = useState<T>(pendingResponse);
-  const [error, setError] = useState<Error | null>(null);
-  const [status, setStatus] = useState<{
-    isLoading: boolean;
-    isLoaded: boolean;
-    isCached: boolean;
-  }>({
-    isLoaded: false,
+  const [requestStatus, setRequestStatus] = useState<RequestResponseType<T>>({
+    data: pendingResponse,
     isLoading: false,
-    isCached: false,
+    error: null,
+    isLoaded: true,
   });
 
   const url = buildURL(path, searchParams).toString();
@@ -34,37 +59,39 @@ const useData = <T>(path: string, pendingResponse: T, searchParams: ParamsObject
   useEffect(() => {
     async function retrieve() {
       if(requestCache.has(url)) {
-        setData(requestCache.get(url) as T);
-        setStatus({
-          isCached: true,
-          isLoading: false,
+        setRequestStatus({
+          data: requestCache.get(url) as T,
           isLoaded: true,
+          isLoading: false,
+          error: null,
         });
       } else {
         try {
-          setStatus({
-            isCached: false,
-            isLoaded: false,
+          setRequestStatus((s) => ({
             isLoading: true,
-          });          
+            isLoaded: false,
+            data: s.data,
+            error: null,
+          }));
+          
           const response = await fetch(url);
           
           if(response.ok) {
             const data = await response.json();
             requestCache.set(url, data);
-            setStatus((status) => ({
-              ...status,
-              isLoading: false,
+            setRequestStatus({
+              data,
               isLoaded: true,
-            }));
-            setData(data);
+              isLoading: false,
+              error: null
+            });
           }
         } catch (e) {
-          setError(e as Error);
-          setStatus((status) => ({
-            ...status,
-            isLoading: false,
+          setRequestStatus((s) => ({
+            data: s.data,
             isLoaded: true,
+            isLoading: false,
+            error: e as Error,
           }));
         }
       }
@@ -73,11 +100,7 @@ const useData = <T>(path: string, pendingResponse: T, searchParams: ParamsObject
     retrieve();
   }, [url]);
 
-  return {
-    data,
-    error,
-    status,
-  };
+  return requestStatus;
 }
 
 const {

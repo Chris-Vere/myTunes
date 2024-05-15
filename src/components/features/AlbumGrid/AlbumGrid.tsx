@@ -11,7 +11,7 @@ export default function AlbumGrid() {
   const { artistId } = useParams();
   const [openAlbumId, setOpenAlbumId] = useState<AlbumId>('-1');
   const [openAlbumUiIndex, setOpenAlbumUiIndex] = useState(-1);
-  const { data: albumData = [] } = useAlbumsByArtistId(artistId!);
+  const { data: albumData } = useAlbumsByArtistId(artistId!);
 
   /*
   const loaderRef = useRef<HTMLDivElement>(null);
